@@ -1,415 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b1220" />
-  <title>Key Verification (Among Us Vip)</title>
-  <style>
-    :root{
-      --bg1:#0b1220;
-      --bg2:#111b2e;
-      --card:rgba(255,255,255,0.08);
-      --border:rgba(255,255,255,0.16);
-      --text:#f3f7ff;
-      --muted:rgba(243,247,255,0.72);
-      --accent1:#00ffa3;
-      --accent2:#00b3ff;
-      --shadow:0 18px 60px rgba(0,0,0,.35);
-      --toast:#10192c;
-      --success:#7dffbf;
-      --danger:#ff9aa8;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Key Verification (Among Us Vip)</title>
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial, Helvetica, sans-serif;
-    }
+<style>
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+  }
 
-    body{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      background:
-        radial-gradient(circle at top left, rgba(0,255,163,0.16), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(0,179,255,0.16), transparent 30%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
-      overflow:hidden;
-      color:var(--text);
-      padding:20px;
-    }
+  body{
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#0b1220,#111b2e);
+    color:white;
+  }
 
-    .background-blobs{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
-      z-index:-1;
-      pointer-events:none;
-    }
+  .card{
+    width:420px;
+    max-width:92vw;
+    padding:28px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.15);
+    text-align:center;
+  }
 
-    .blob{
-      position:absolute;
-      width:320px;
-      height:320px;
-      border-radius:50%;
-      filter:blur(90px);
-      opacity:.85;
-      animation: float 11s ease-in-out infinite;
-    }
+  h1{margin-bottom:10px;}
 
-    .blob.one{
-      top:8%;
-      left:8%;
-      background:rgba(0,255,163,0.22);
-    }
+  .uid-box{
+    margin:15px 0;
+    padding:12px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.06);
+    font-size:12px;
+    word-break:break-all;
+    text-align:left;
+  }
 
-    .blob.two{
-      top:20%;
-      right:10%;
-      background:rgba(255,0,150,0.18);
-      animation-delay:1.5s;
-    }
+  button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:12px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+  }
 
-    .blob.three{
-      bottom:8%;
-      left:18%;
-      background:rgba(0,120,255,0.2);
-      animation-delay:3s;
-    }
+  .start{
+    background:linear-gradient(90deg,#00ffa3,#00b3ff);
+    color:black;
+  }
 
-    @keyframes float{
-      0%,100%{transform:translateY(0px) translateX(0px) scale(1);}
-      50%{transform:translateY(-26px) translateX(14px) scale(1.03);}
-    }
+  .uidBtn{
+    background:rgba(255,255,255,0.1);
+    color:white;
+  }
 
-    .card{
-      width:min(94vw, 430px);
-      padding:28px;
-      border-radius:24px;
-      background:var(--card);
-      backdrop-filter:blur(22px);
-      -webkit-backdrop-filter:blur(22px);
-      border:1px solid var(--border);
-      box-shadow:var(--shadow);
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-      animation: popIn .45s ease-out;
-    }
+  button:hover{transform:scale(1.03);}
 
-    @keyframes popIn{
-      from{opacity:0; transform:translateY(18px) scale(.98);}
-      to{opacity:1; transform:translateY(0) scale(1);}
-    }
+  .toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#111;
+    padding:10px 16px;
+    border-radius:12px;
+    font-size:13px;
+    opacity:0;
+    transition:.25s;
+  }
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.12);
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:16px;
-    }
-
-    h1{
-      font-size:22px;
-      line-height:1.2;
-      margin-bottom:10px;
-      letter-spacing:.2px;
-    }
-
-    .subtitle{
-      font-size:13px;
-      line-height:1.5;
-      color:var(--muted);
-      margin-bottom:18px;
-    }
-
-    .uid-box{
-      text-align:left;
-      margin:16px 0 18px;
-      padding:14px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.12);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-
-    .uid-label{
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.12em;
-      color:rgba(243,247,255,0.58);
-      margin-bottom:8px;
-    }
-
-    .uid{
-      word-break:break-all;
-      font-size:13px;
-      line-height:1.55;
-      color:#ffffff;
-      user-select:all;
-    }
-
-    .info{
-      display:grid;
-      gap:8px;
-      text-align:left;
-      margin-bottom:18px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .info-row{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-    }
-
-    .info-row span:first-child{
-      width:22px;
-      flex:0 0 22px;
-      text-align:center;
-    }
-
-    .actions{
-      display:grid;
-      gap:10px;
-    }
-
-    button{
-      width:100%;
-      padding:13px 14px;
-      border:none;
-      border-radius:14px;
-      font-weight:700;
-      font-size:14px;
-      cursor:pointer;
-      transition:transform .18s ease, opacity .18s ease, box-shadow .18s ease, filter .18s ease;
-    }
-
-    .copy-btn{
-      color:#07111d;
-      background:linear-gradient(90deg, var(--accent1), var(--accent2));
-      box-shadow:0 10px 25px rgba(0,179,255,0.18);
-    }
-
-    .copy-btn:hover{
-      transform:translateY(-1px);
-      filter:brightness(1.05);
-    }
-
-    .secondary{
-      background:rgba(255,255,255,0.08);
-      color:var(--text);
-      border:1px solid rgba(255,255,255,0.12);
-    }
-
-    .secondary:hover{
-      transform:translateY(-1px);
-      background:rgba(255,255,255,0.11);
-    }
-
-    .status{
-      min-height:18px;
-      font-size:12px;
-      color:rgba(255,255,255,0.78);
-      margin-top:10px;
-    }
-
-    .status.ok{
-      color:var(--success);
-    }
-
-    .status.err{
-      color:var(--danger);
-    }
-
-    .footer{
-      margin-top:16px;
-      font-size:11px;
-      color:rgba(243,247,255,0.5);
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:22px;
-      transform:translateX(-50%) translateY(120%);
-      min-width:min(92vw, 360px);
-      max-width:420px;
-      padding:12px 16px;
-      border-radius:14px;
-      background:rgba(16,25,44,0.95);
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.12);
-      box-shadow:0 14px 40px rgba(0,0,0,.35);
-      opacity:0;
-      pointer-events:none;
-      transition:transform .28s ease, opacity .28s ease;
-      z-index:10;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:13px;
-      backdrop-filter:blur(14px);
-    }
-
-    .toast.show{
-      transform:translateX(-50%) translateY(0);
-      opacity:1;
-    }
-
-    .toast .dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:var(--accent1);
-      box-shadow:0 0 14px rgba(0,255,163,.5);
-      flex:0 0 10px;
-    }
-
-    .toast.success .dot{
-      background:var(--success);
-      box-shadow:0 0 14px rgba(125,255,191,.5);
-    }
-
-    .toast.error .dot{
-      background:var(--danger);
-      box-shadow:0 0 14px rgba(255,154,168,.5);
-    }
-
-    @media (max-width:420px){
-      .card{padding:22px;}
-      h1{font-size:20px;}
-      .subtitle{font-size:12px;}
-    }
-  </style>
+  .toast.show{
+    opacity:1;
+  }
+</style>
 </head>
+
 <body>
-  <div class="background-blobs" aria-hidden="true">
-    <div class="blob one"></div>
-    <div class="blob two"></div>
-    <div class="blob three"></div>
+
+<div class="card">
+  <h1>Key Verification (Among Us Vip)</h1>
+
+  <div class="uid-box" id="uidText">
+UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0
   </div>
 
-  <div class="card">
-    <div class="badge">🟩 Key Verification</div>
-    <h1>Among Us Vip</h1>
-    <p class="subtitle">
-      Tap a button below to copy the key or UID instantly.
-    </p>
+  <button class="start" onclick="copyStart()">
+    Start
+  </button>
 
-    <div class="uid-box">
-      <div class="uid-label">Key</div>
-      <div class="uid" id="keyText">
-        KEY-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0
-      </div>
-    </div>
+  <button class="uidBtn" onclick="copyUID()">
+    Get UID
+  </button>
+</div>
 
-    <div class="uid-box">
-      <div class="uid-label">UID</div>
-      <div class="uid" id="uidText">
-        UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0
-      </div>
-    </div>
+<div class="toast" id="toast">Copied!</div>
 
-    <div class="info">
-      <div class="info-row">
-        <span>⏳</span>
-        <span>Expiration: Forever until next update</span>
-      </div>
-      <div class="info-row">
-        <span>🔐</span>
-        <span>Secure verification required</span>
-      </div>
-    </div>
+<script>
+const toast = document.getElementById("toast");
 
-    <div class="actions">
-      <button class="copy-btn" onclick="copyKey()">Start &gt; Copies</button>
-      <button class="secondary" onclick="copyUid()">Get UId</button>
-    </div>
+function showToast(text){
+  toast.innerText = text;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"), 1500);
+}
 
-    <div class="status" id="status"></div>
-    <div class="footer">Tap a button to copy instantly.</div>
-  </div>
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 
-  <div class="toast" id="toast">
-    <div class="dot"></div>
-    <div id="toastText">Copied!</div>
-  </div>
+// START button → copies OUO link
+function copyStart(){
+  copyText("https://ouo.io/qA6vsn");
+  showToast("Link copied!");
+}
 
-  <script>
-    const keyText = document.getElementById("keyText").innerText.trim();
-    const uidText = document.getElementById("uidText").innerText.trim();
-    const statusEl = document.getElementById("status");
-    const toast = document.getElementById("toast");
-    const toastText = document.getElementById("toastText");
-    let toastTimer = null;
+// UID button → copies UID
+function copyUID(){
+  const uid = document.getElementById("uidText").innerText.trim();
+  copyText(uid);
+  showToast("UID copied!");
+}
+</script>
 
-    async function copyToClipboard(text) {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        return true;
-      }
-
-      const temp = document.createElement("textarea");
-      temp.value = text;
-      temp.style.position = "fixed";
-      temp.style.left = "-9999px";
-      document.body.appendChild(temp);
-      temp.focus();
-      temp.select();
-
-      const ok = document.execCommand("copy");
-      temp.remove();
-      return ok;
-    }
-
-    function showToast(message, type = "success") {
-      toast.className = `toast ${type} show`;
-      toastText.textContent = message;
-
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toast.className = "toast";
-      }, 2200);
-    }
-
-    function setStatus(message, ok = true) {
-      statusEl.textContent = message;
-      statusEl.className = ok ? "status ok" : "status err";
-    }
-
-    async function copyKey() {
-      try {
-        const ok = await copyToClipboard(keyText);
-        if (!ok) throw new Error("Copy failed");
-        setStatus("Key copied to clipboard.");
-        showToast("Key copied.", "success");
-      } catch (err) {
-        setStatus("Could not copy the key automatically.", false);
-        showToast("Copy failed.", "error");
-      }
-    }
-
-    async function copyUid() {
-      try {
-        const ok = await copyToClipboard(uidText);
-        if (!ok) throw new Error("Copy failed");
-        setStatus("UID copied to clipboard.");
-        showToast("UID copied.", "success");
-      } catch (err) {
-        setStatus("Could not copy the UID automatically.", false);
-        showToast("Copy failed.", "error");
-      }
-    }
-  </script>
 </body>
 </html>
