@@ -3,104 +3,112 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Key Verification (Among Us Vip)</title>
+<title>Password Steps</title>
 
 <style>
-  *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-  }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
 
-  body{
-    min-height:100vh;
-    display:grid;
-    place-items:center;
-    background:linear-gradient(135deg,#0b1220,#111b2e);
-    color:white;
-  }
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(135deg,#0f172a,#1e293b,#020617);
+  color:white;
+}
 
-  .card{
-    width:420px;
-    max-width:92vw;
-    padding:28px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,0.15);
-    text-align:center;
-  }
+/* Glass Card */
+.card{
+  width:400px;
+  max-width:90%;
+  padding:30px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.07);
+  backdrop-filter: blur(25px);
+  border:1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  text-align:center;
+}
 
-  h1{margin-bottom:10px;}
+h1{
+  margin-bottom:20px;
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:.5px;
+}
 
-  .uid-box{
-    margin:15px 0;
-    padding:12px;
-    border-radius:14px;
-    background:rgba(255,255,255,0.06);
-    font-size:12px;
-    word-break:break-all;
-    text-align:left;
-  }
+/* Buttons */
+button{
+  width:100%;
+  padding:13px;
+  margin-top:12px;
+  border:none;
+  border-radius:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition: all .25s ease;
+  font-size:14px;
+}
 
-  button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:12px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.2s;
-  }
+/* Start Button */
+.start{
+  background: linear-gradient(90deg,#00ffa3,#00c6ff);
+  color:black;
+}
 
-  .start{
-    background:linear-gradient(90deg,#00ffa3,#00b3ff);
-    color:black;
-  }
+.start:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 20px rgba(0,255,163,0.4);
+}
 
-  .uidBtn{
-    background:rgba(255,255,255,0.1);
-    color:white;
-  }
+/* UID Button */
+.uidBtn{
+  background: rgba(255,255,255,0.08);
+  color:white;
+  border:1px solid rgba(255,255,255,0.15);
+}
 
-  button:hover{transform:scale(1.03);}
+.uidBtn:hover{
+  background: rgba(255,255,255,0.15);
+}
 
-  .toast{
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#111;
-    padding:10px 16px;
-    border-radius:12px;
-    font-size:13px;
-    opacity:0;
-    transition:.25s;
-  }
+/* Toast */
+.toast{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+  padding:12px 18px;
+  border-radius:14px;
+  font-size:13px;
+  opacity:0;
+  transition:.3s;
+}
 
-  .toast.show{
-    opacity:1;
-  }
+.toast.show{
+  opacity:1;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-  <h1>Key Verification (Among Us Vip)</h1>
-
-  <div class="uid-box" id="uidText">
-UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0
-  </div>
+  <h1>Verification (MozLaunch)</h1>
 
   <button class="start" onclick="copyStart()">
-    Start
+    Start Verification
   </button>
 
   <button class="uidBtn" onclick="copyUID()">
-    Get UID
+    Copy UID
   </button>
 </div>
 
@@ -108,6 +116,9 @@ UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2
 
 <script>
 const toast = document.getElementById("toast");
+
+// your UID stored clean (not shown on UI)
+const UID = "UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0";
 
 function showToast(text){
   toast.innerText = text;
@@ -124,16 +135,13 @@ async function copyText(text){
   }
 }
 
-// START button → copies OUO link
 function copyStart(){
   copyText("https://ouo.io/qA6vsn");
   showToast("Link copied!");
 }
 
-// UID button → copies UID
 function copyUID(){
-  const uid = document.getElementById("uidText").innerText.trim();
-  copyText(uid);
+  copyText(UID);
   showToast("UID copied!");
 }
 </script>
