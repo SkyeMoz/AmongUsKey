@@ -39,7 +39,6 @@ h1{
   margin-bottom:20px;
   font-size:22px;
   font-weight:600;
-  letter-spacing:.5px;
 }
 
 /* Buttons */
@@ -55,7 +54,6 @@ button{
   font-size:14px;
 }
 
-/* Start Button */
 .start{
   background: linear-gradient(90deg,#00ffa3,#00c6ff);
   color:black;
@@ -66,7 +64,6 @@ button{
   box-shadow:0 0 20px rgba(0,255,163,0.4);
 }
 
-/* UID Button */
 .uidBtn{
   background: rgba(255,255,255,0.08);
   color:white;
@@ -117,7 +114,6 @@ button{
 <script>
 const toast = document.getElementById("toast");
 
-// your UID stored clean (not shown on UI)
 const UID = "UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0";
 
 function showToast(text){
@@ -126,25 +122,41 @@ function showToast(text){
   setTimeout(()=>toast.classList.remove("show"), 1500);
 }
 
+// fallback copy method
+function fallbackCopy(text){
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+}
+
 async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      fallbackCopy(text);
+    }
     return true;
-  }catch(e){
+  } catch (e) {
+    console.log("Copy failed:", e);
+    fallbackCopy(text);
     return false;
   }
 }
 
-function copyStart(){
-  copyText("https://ouo.io/qA6vsn");
+async function copyStart(){
+  await copyText("https://ouo.io/qA6vsn");
   showToast("Link copied!");
 }
 
-function copyUID(){
-  copyText(UID);
-  showToast("UID copied!");
+async function copyUID(){
+  const ok = await copyText(UID);
+  showToast(ok ? "UID copied!" : "Copied (fallback used)");
 }
 </script>
 
 </body>
-</html>
+</html> 
