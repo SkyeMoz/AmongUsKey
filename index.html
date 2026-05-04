@@ -1,162 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Password Steps</title>
-
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-body{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: linear-gradient(135deg,#0f172a,#1e293b,#020617);
-  color:white;
-}
-
-/* Glass Card */
-.card{
-  width:400px;
-  max-width:90%;
-  padding:30px;
-  border-radius:22px;
-  background:rgba(255,255,255,0.07);
-  backdrop-filter: blur(25px);
-  border:1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  text-align:center;
-}
-
-h1{
-  margin-bottom:20px;
-  font-size:22px;
-  font-weight:600;
-}
-
-/* Buttons */
-button{
-  width:100%;
-  padding:13px;
-  margin-top:12px;
-  border:none;
-  border-radius:14px;
-  font-weight:600;
-  cursor:pointer;
-  transition: all .25s ease;
-  font-size:14px;
-}
-
-.start{
-  background: linear-gradient(90deg,#00ffa3,#00c6ff);
-  color:black;
-}
-
-.start:hover{
-  transform:scale(1.04);
-  box-shadow:0 0 20px rgba(0,255,163,0.4);
-}
-
-.uidBtn{
-  background: rgba(255,255,255,0.08);
-  color:white;
-  border:1px solid rgba(255,255,255,0.15);
-}
-
-.uidBtn:hover{
-  background: rgba(255,255,255,0.15);
-}
-
-/* Toast */
-.toast{
-  position:fixed;
-  bottom:25px;
-  left:50%;
-  transform:translateX(-50%);
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(10px);
-  padding:12px 18px;
-  border-radius:14px;
-  font-size:13px;
-  opacity:0;
-  transition:.3s;
-}
-
-.toast.show{
-  opacity:1;
-}
-</style>
-</head>
-
-<body>
-
-<div class="card">
-  <h1>Verification (MozLaunch)</h1>
-
-  <button class="start" onclick="copyStart()">
-    Start Verification
-  </button>
-
-  <button class="uidBtn" onclick="copyUID()">
-    Copy UID
-  </button>
-</div>
-
-<div class="toast" id="toast">Copied!</div>
-
-<script>
-const toast = document.getElementById("toast");
-
-const UID = "UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0";
-
-function showToast(text){
-  toast.innerText = text;
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"), 1500);
-}
-
-// fallback copy method
-function fallbackCopy(text){
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textarea);
-}
-
-async function copyText(text){
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text);
-    } else {
-      fallbackCopy(text);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Secure Access</title>
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-2: rgba(255, 255, 255, 0.09);
+      --text: #e8edf7;
+      --muted: #9aa7bd;
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #7c5cff;
+      --accent-2: #39d98a;
+      --danger: #ff6b6b;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --tap: 48px;
     }
-    return true;
-  } catch (e) {
-    console.log("Copy failed:", e);
-    fallbackCopy(text);
-    return false;
-  }
-}
 
-async function copyStart(){
-  await copyText("https://ouo.io/qA6vsn");
-  showToast("Link copied!");
-}
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-async function copyUID(){
-  const ok = await copyText(UID);
-  showToast(ok ? "UID copied!" : "Copied (fallback used)");
-}
-</script>
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(124, 92, 255, 0.18), transparent 35%),
+        radial-gradient(circle at bottom, rgba(57, 217, 138, 0.10), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
 
+    body {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    main {
+      width: min(760px, 100%);
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      padding: clamp(18px, 4vw, 32px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.55rem, 5vw, 2.3rem);
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: clamp(0.94rem, 3.4vw, 1rem);
+      line-height: 1.5;
+    }
+
+    .uid-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .uid-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .uid {
+      min-width: 0;
+      padding: 14px 12px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: clamp(0.88rem, 3.2vw, 1rem);
+      line-height: 1.45;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      min-height: var(--tap);
+      padding: 0 16px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      touch-action: manipulation;
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .copy-btn {
+      background: linear-gradient(135deg, #2f7cf6, #775cff);
+      white-space: nowrap;
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #5d8bff);
+      margin-bottom: 14px;
+    }
+
+    .final-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-2), #1fbf7a);
+      margin-top: 14px;
+      display: none;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 2px 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      min-height: 24px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #8a94a8;
+      box-shadow: 0 0 0 0 rgba(138, 148, 168, 0.35);
+    }
+
+    .dot.busy {
+      background: #ffd166;
+      box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.45);
+      animation: pulse 1.2s infinite;
+    }
+
+    .dot.done {
+      background: var(--accent-2);
+      box-shadow: 0 0 0 0 rgba(57, 217, 138, 0.35);
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.45); }
+      70% { box-shadow: 0 0 0 12px rgba(255, 209, 102, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0); }
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin: 10px 0 10px;
+    }
+
+    .progress {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #7c5cff, #39d98a);
+      transition: width 0.2s linear;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      margin-top: 6px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 10px;
+      }
+
+      .panel {
+        padding: 16px;
+        border-radius: 20px;
+      }
+
+      .uid-row {
+        grid-template-columns: 1fr;
+      }
+
+      .copy-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 380px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      .uid {
+        padding: 12px 10px;
+      }
+
+      .btn {
+        min-height: 46px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="panel">
+      <h1>Generate Key</h1>
+      <p class="sub">Copy the UID, then press generate. A loading state will run for a random 20 to 30 seconds before unlocking the final button.</p>
+
+      <section class="uid-box">
+        <div class="uid-row">
+          <div class="uid" id="uidText">UID-7f3c9a1b6e4d2c8f91a0d5b3e7c6f8a2d9b1c4e6f0a8d3c5b7e1f9a2d4c6b8e0f1a3c5d7b9e2f4a6c8d0b2e4f6a8c1d3b5e7f9a0c2d4b6e8f1a3c5d7b9e0f2a4c6d8b1e3f5a7c9d0b2e4f6a8c0</div>
+          <button class="btn copy-btn" id="copyBtn" type="button">Copy UID</button>
+        </div>
+
+        <button class="btn generate-btn" id="generateBtn" type="button">Generate</button>
+
+        <div class="status" id="statusRow">
+          <span class="dot" id="dot"></span>
+          <span id="statusText">Ready when you are.</span>
+        </div>
+
+        <div class="progress-wrap hidden" id="progressWrap" aria-hidden="true">
+          <div class="progress" id="progressBar"></div>
+        </div>
+
+        <button class="btn final-btn" id="finalBtn" type="button">Final Button</button>
+
+        <div class="tiny" id="tinyText">The final button appears after the timer finishes.</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const uidText = document.getElementById('uidText');
+    const copyBtn = document.getElementById('copyBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    const finalBtn = document.getElementById('finalBtn');
+    const statusText = document.getElementById('statusText');
+    const dot = document.getElementById('dot');
+    const progressWrap = document.getElementById('progressWrap');
+    const progressBar = document.getElementById('progressBar');
+    const tinyText = document.getElementById('tinyText');
+
+    let timer = null;
+    let progressTimer = null;
+    let isRunning = false;
+
+    function setStatus(text, state) {
+      statusText.textContent = text;
+      dot.classList.remove('busy', 'done');
+      if (state === 'busy') dot.classList.add('busy');
+      if (state === 'done') dot.classList.add('done');
+    }
+
+    function resetUI() {
+      clearInterval(timer);
+      clearInterval(progressTimer);
+      isRunning = false;
+
+      generateBtn.disabled = false;
+      finalBtn.style.display = 'none';
+      progressWrap.classList.add('hidden');
+      progressBar.style.width = '0%';
+      tinyText.textContent = 'The final button appears after the timer finishes.';
+      setStatus('Ready when you are.', null);
+    }
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(uidText.textContent.trim());
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => (copyBtn.textContent = 'Copy UID'), 1200);
+      } catch (e) {
+        const range = document.createRange();
+        range.selectNodeContents(uidText);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand('copy');
+        sel.removeAllRanges();
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => (copyBtn.textContent = 'Copy UID'), 1200);
+      }
+    });
+
+    generateBtn.addEventListener('click', () => {
+      if (isRunning) return;
+
+      isRunning = true;
+      generateBtn.disabled = true;
+      finalBtn.style.display = 'none';
+      progressWrap.classList.remove('hidden');
+
+      const duration = 20000 + Math.floor(Math.random() * 10001);
+      const start = performance.now();
+
+      setStatus('Generating key...', 'busy');
+      tinyText.textContent = 'Please keep this tab open while the check runs.';
+
+      progressTimer = setInterval(() => {
+        const elapsed = performance.now() - start;
+        const pct = Math.min((elapsed / duration) * 100, 100);
+        progressBar.style.width = pct + '%';
+
+        if (pct < 100) {
+          const remaining = Math.ceil((duration - elapsed) / 1000);
+          statusText.textContent = `Generating key... ${remaining}s`;
+        }
+      }, 100);
+
+      timer = setTimeout(() => {
+        clearInterval(progressTimer);
+        progressBar.style.width = '100%';
+        setStatus('Unlocked.', 'done');
+        tinyText.textContent = 'Final button is now available.';
+        finalBtn.style.display = 'block';
+        generateBtn.disabled = false;
+        isRunning = false;
+      }, duration);
+    });
+
+    finalBtn.addEventListener('click', () => {
+      alert('Final button clicked.');
+    });
+
+    resetUI();
+  </script>
 </body>
-</html> 
+</html>
